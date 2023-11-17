@@ -1,0 +1,17 @@
+{
+  "item.alcamod.alcanite": "Alcanite",
+  "item.alcamod.alcanite_nugget": "Pépite d'Alcanite",
+  "item.alcamod.alcanite_helmet": "Casque en Alcanite",
+  "item.alcamod.alcanite_chestplate": "Plastron en Alcanite",
+  "item.alcamod.alcanite_leggings": "Jambières en Alcanite",
+  "item.alcamod.alcanite_boots": "Bottes en Alcanite",
+  "item.alcamod.alcanite_sword":"Epée en Alcanite",
+  "item.alcamod.alcanite_pickaxe":"Pioche en Alcanite",
+  "item.alcamod.alcanite_shovel":"Shovel en Alcanite",
+  "item.alcamod.alcanite_axe":"Hâche en Alcanite",
+  "item.alcamod.alcanite_hoe":"Hoe en Alcanite",
+  "block.alcamod.alcanite_block": "Alcanite Block",
+  "item.alcamod.alcanite_block": "Alcanite Block",
+  "block.alcamod.alcanite_block": "Alcanite Block"
+
+}
