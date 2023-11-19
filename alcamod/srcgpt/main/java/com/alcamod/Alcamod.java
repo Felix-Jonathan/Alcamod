@@ -43,9 +43,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-import com.alcamod.gui.DailyGui;
-import com.alcamod.NetworkHandler;
-
 
 @Mod.EventBusSubscriber(modid = Alcamod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod("alcamod")
@@ -104,7 +101,6 @@ public class Alcamod {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private void setup(final FMLCommonSetupEvent event) {
-        // Configuration du mod
         createModConfigDirectory();
     }
 
@@ -170,12 +166,8 @@ public class Alcamod {
 
 
 
-
-
-
     private void doClientStuff(final FMLClientSetupEvent event) {
-        // Enregistrement de l'écran (GUI) avec le conteneur
-        ScreenManager.register(Alcamod.DAILY_CONTAINER.get(), DailyGui::new);
+        //test
     }
 
     @SubscribeEvent
@@ -183,19 +175,16 @@ public class Alcamod {
         TodayCommand.register(event.getDispatcher());
     }
 
-
     public Alcamod() {
         LOGGER.debug("Logger : Initialize");
         MinecraftForge.EVENT_BUS.register(this);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ITEMS.register(modEventBus);
         BLOCKS.register(modEventBus);
-        CONTAINERS.register(modEventBus); // Enregistrement unique de CONTAINERS
-        NetworkHandler.registerMessages();
+        CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         modEventBus.addListener(this::setup);
         modEventBus.addListener(this::doClientStuff);
     }
-
 
 
 }

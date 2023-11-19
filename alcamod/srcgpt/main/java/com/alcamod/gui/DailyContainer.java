@@ -4,7 +4,6 @@ import com.alcamod.Alcamod;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -71,7 +70,6 @@ public class DailyContainer extends Container {
         }
         System.out.println("PlacementFini");
     }
-
 
     private List<String> readPlayerRewards(UUID playerUUID) {
         try {

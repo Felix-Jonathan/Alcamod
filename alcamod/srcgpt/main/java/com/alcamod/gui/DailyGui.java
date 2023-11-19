@@ -1,6 +1,5 @@
 package com.alcamod.gui;
 
-import com.alcamod.PacketAddItemToInventory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,7 +26,6 @@ import java.util.UUID;
 import java.time.LocalDate;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
-import com.alcamod.NetworkHandler;
 public class DailyGui extends ContainerScreen<DailyContainer> {
 
     private static final ResourceLocation GUI = new ResourceLocation("alcamod", "textures/gui/interfacejournalieresansbg.png");
@@ -83,7 +81,7 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
-        //fill(matrixStack, buttonX, buttonY, buttonX + BUTTON_WIDTH, buttonY + BUTTON_HEIGHT, 0xFFFFFF00); // Couleur jaune clair
+        fill(matrixStack, buttonX, buttonY, buttonX + BUTTON_WIDTH, buttonY + BUTTON_HEIGHT, 0xFFFFFF00); // Couleur jaune clair
     }
 
     private void renderScaledItem(MatrixStack matrixStack, Slot slot, float scale) {
@@ -118,10 +116,12 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
                             if (item != null) {
                                 ItemStack itemStack = new ItemStack(item);
                                 // Donner l'item au joueur
-                                //boolean itemAdded = player.inventory.add(itemStack);
-                                PacketAddItemToInventory packet = new PacketAddItemToInventory(itemStack);
-                                NetworkHandler.INSTANCE.sendToServer(new PacketAddItemToInventory(itemStack));
-                                player.inventoryMenu.broadcastChanges();
+                                boolean itemAdded = player.inventory.add(itemStack);
+                                if (itemAdded) {
+                                    System.out.println("Item ajouté au joueur: " + reward);
+                                } else {
+                                    System.out.println("Pas de place dans l'inventaire pour: " + reward);
+                                }
                                 break;
                             }
                         }

@@ -140,32 +140,8 @@ public class PlayerEventHandler {
 
         // Vérifiez si le dernier clic n'a pas été effectué aujourd'hui
         if (!lastClickDate.equals(currentDate)) {
-
-
             // Ouvrir le GUI directement
-            if (event.getPlayer() instanceof ServerPlayerEntity) {
-                ServerPlayerEntity player2 = (ServerPlayerEntity) event.getPlayer();
-                // Ouvrir le GUI ici
-
-                scheduler.schedule(() -> {
-                    if (player2.getServer() != null && player2.getServer().getPlayerList().getPlayer(player2.getUUID()) != null) {
-                        NetworkHooks.openGui(player2, new INamedContainerProvider() {
-                    @Override
-                    public ITextComponent getDisplayName() {
-                        return new StringTextComponent("Daily Rewards");
-                    }
-
-                    @Nullable
-                    @Override
-                    public Container createMenu(int windowId, PlayerInventory inv, PlayerEntity player2) {
-                        System.out.println("Connexion");
-                        return new DailyContainer(windowId, inv);
-                    }
-                        });
-                    }
-                }, 5, TimeUnit.SECONDS);
-            }
-
+            openDailyGui((ServerPlayerEntity) player);
 
         }
     }
