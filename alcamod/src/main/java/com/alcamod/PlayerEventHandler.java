@@ -2,8 +2,11 @@ package com.alcamod;
 
 import com.alcamod.gui.DailyContainer;
 import com.alcamod.gui.DailyGui;
+import com.alcamod.network.RewardDataPacket;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.netty.util.concurrent.AbstractEventExecutor;
@@ -19,11 +22,15 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.fml.network.PacketDistributor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,6 +49,8 @@ import java.util.concurrent.ScheduledExecutorService;
 public class PlayerEventHandler {
 
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static final Logger LOGGER = LogManager.getLogger();
+
 
     private static class ConfigData {
 
@@ -71,6 +80,20 @@ public class PlayerEventHandler {
             }
         } catch (Exception e) {
             // Gérer l'exception
+        }
+    }
+
+    private static List<String> readPlayerRewards(UUID playerUUID) {
+        try {
+            Path playerFile = Paths.get("config/alcamod/dailyRewards/playerData", playerUUID.toString() + ".json");
+            String json = new String(Files.readAllBytes(playerFile));
+            JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+            JsonArray rewardsArray = jsonObject.getAsJsonArray("rewards");
+            Type type = new TypeToken<List<String>>(){}.getType();
+            return new Gson().fromJson(rewardsArray, type);
+        } catch (Exception e) {
+            e.printStackTrace();  // Imprime la trace de l'exception
+            return Collections.emptyList();
         }
     }
 
@@ -124,7 +147,6 @@ public class PlayerEventHandler {
         }
     }
 
-
     @SubscribeEvent
     public static void onPlayerLogin(PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
@@ -132,58 +154,26 @@ public class PlayerEventHandler {
             return;
         }
 
-        UUID playerUUID = player.getUUID();
-        createPlayerFile(playerUUID);
+        ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+        UUID playerUUID = serverPlayer.getUUID();
+        createPlayerFile(playerUUID); // Assurez-vous que cette méthode crée le fichier si nécessaire
 
-        LocalDate lastClickDate = readLastClickDate(playerUUID);
-        LocalDate currentDate = LocalDate.now();
+        scheduler.schedule(() -> {
+            LocalDate lastClickDate = readLastClickDate(playerUUID);
+            LocalDate currentDate = LocalDate.now();
 
-        // Vérifiez si le dernier clic n'a pas été effectué aujourd'hui
-        if (!lastClickDate.equals(currentDate)) {
+            if (!lastClickDate.equals(currentDate)) {
+                LOGGER.info("Sending daily rewards to player: {}", player.getName().getString());
+                List<String> rewards = readPlayerRewards(playerUUID);
 
-
-            // Ouvrir le GUI directement
-            if (event.getPlayer() instanceof ServerPlayerEntity) {
-                ServerPlayerEntity player2 = (ServerPlayerEntity) event.getPlayer();
-                // Ouvrir le GUI ici
-
-                scheduler.schedule(() -> {
-                    if (player2.getServer() != null && player2.getServer().getPlayerList().getPlayer(player2.getUUID()) != null) {
-                        NetworkHooks.openGui(player2, new INamedContainerProvider() {
-                    @Override
-                    public ITextComponent getDisplayName() {
-                        return new StringTextComponent("Daily Rewards");
-                    }
-
-                    @Nullable
-                    @Override
-                    public Container createMenu(int windowId, PlayerInventory inv, PlayerEntity player2) {
-                        System.out.println("Connexion");
-                        return new DailyContainer(windowId, inv);
-                    }
-                        });
-                    }
-                }, 5, TimeUnit.SECONDS);
+                if (serverPlayer.getServer() != null && serverPlayer.getServer().getPlayerList().getPlayer(playerUUID) != null) {
+                    RewardDataPacket packet = new RewardDataPacket(rewards);
+                    NetworkHandler.INSTANCE.sendTo(packet, serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+                }
             }
-
-
-        }
+        }, 5, TimeUnit.SECONDS);
     }
 
-    private static void openDailyGui(ServerPlayerEntity player) {
-        NetworkHooks.openGui(player, new INamedContainerProvider() {
-            @Override
-            public ITextComponent getDisplayName() {
-                return new StringTextComponent("Daily Rewards");
-            }
-
-            @Nullable
-            @Override
-            public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
-                return new DailyContainer(windowId, playerInventory);
-            }
-        }, (packetBuffer) -> {});
-    }
 
     private static LocalDate readLastClickDate(UUID playerUUID) {
         try {

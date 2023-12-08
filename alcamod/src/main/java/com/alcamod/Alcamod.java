@@ -97,16 +97,14 @@ public class Alcamod {
 
 
     public static final RegistryObject<ContainerType<DailyContainer>> DAILY_CONTAINER = CONTAINERS.register("daily_container",
-            () -> IForgeContainerType.create((windowId, inv, data) -> new DailyContainer(windowId, inv)));
-
+            () -> IForgeContainerType.create((windowId, inv, data) -> {
+                return new DailyContainer(windowId, inv, new ArrayList<>());
+            }));
 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private void setup(final FMLCommonSetupEvent event) {
-        // Configuration du mod
-        createModConfigDirectory();
-    }
+
 
     private void createModConfigDirectory() {
         try {
@@ -168,15 +166,12 @@ public class Alcamod {
     }
 
 
-
-
-
-
-
     private void doClientStuff(final FMLClientSetupEvent event) {
         // Enregistrement de l'écran (GUI) avec le conteneur
         ScreenManager.register(Alcamod.DAILY_CONTAINER.get(), DailyGui::new);
     }
+
+
 
     @SubscribeEvent
     public void onServerStarting(RegisterCommandsEvent event) {
@@ -192,10 +187,9 @@ public class Alcamod {
         BLOCKS.register(modEventBus);
         CONTAINERS.register(modEventBus); // Enregistrement unique de CONTAINERS
         NetworkHandler.registerMessages();
-        modEventBus.addListener(this::setup);
+
+        createModConfigDirectory();
         modEventBus.addListener(this::doClientStuff);
     }
-
-
 
 }

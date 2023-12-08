@@ -27,17 +27,16 @@ public class DailyContainer extends Container {
     private static final int SLOT_SIZE = 36;
     private DisplayInventory displayInventory;
 
-    public static List<String> rewards;
+
     public static UUID playerUUID;
 
 
-    public DailyContainer(int windowId, PlayerInventory playerInventory) {
+    public DailyContainer(int windowId, PlayerInventory playerInventory, List<String> rewards) {
         super(Alcamod.DAILY_CONTAINER.get(), windowId);
         this.displayInventory = new DisplayInventory(15); // 15 emplacements pour l'affichage
 
         this.playerUUID = playerInventory.player.getUUID();
-        this.rewards = readPlayerRewards(playerUUID);
-        System.out.println(this.rewards);
+        System.out.println(rewards);
 
         int centerX = 125;
         int centerY = 28;
@@ -50,7 +49,7 @@ public class DailyContainer extends Container {
                 int yPosition = startY + (line * SLOT_SIZE);
                 int slotIndex = i + (line * 5);
 
-                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(this.rewards.get(slotIndex).toLowerCase()));
+                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(rewards.get(slotIndex).toLowerCase()));
                 System.out.println(item);
                 ItemStack itemStack = item != null ? new ItemStack(item, 1) : new ItemStack(net.minecraft.item.Items.AIR);
 
@@ -73,27 +72,11 @@ public class DailyContainer extends Container {
     }
 
 
-    private List<String> readPlayerRewards(UUID playerUUID) {
-        try {
-            Path playerFile = Paths.get("config/alcamod/dailyRewards/playerData", playerUUID.toString() + ".json");
-            String json = new String(Files.readAllBytes(playerFile));
-            JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-            JsonArray rewardsArray = jsonObject.getAsJsonArray("rewards");
-            Type type = new TypeToken<List<String>>(){}.getType();
-            return new Gson().fromJson(rewardsArray, type);
-        } catch (Exception e) {
-            e.printStackTrace();  // Imprime la trace de l'exception
-            return Collections.emptyList();
-        }
-    }
-
-
     @Override
     public boolean stillValid(PlayerEntity player) {
         return true;
     }
 
-    public static List<String> getRewards() {
-        return rewards;
-    }
+
+
 }
