@@ -32,6 +32,12 @@ import com.alcamod.NetworkHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+
+
 public class DailyGui extends ContainerScreen<DailyContainer> {
 
     private static final ResourceLocation GUI = new ResourceLocation("alcamod", "textures/gui/dailyrewards.png");
@@ -47,6 +53,8 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private LocalDate lastClickDate;
+
+    private int tickCount = 0;
     public DailyGui(DailyContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         // Vous devrez ajuster ces dimensions en fonction de la taille de votre image de fond et de la mise en page de votre GUI
@@ -92,6 +100,17 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
         updateDisplaySlots();
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
+        renderCountdown(matrixStack);
+        LocalDate currentDate = LocalDate.now();
+        if (!lastClickDate.equals(currentDate)) {
+            tickCount++;
+            if (tickCount >= 20) { // Rafraîchit toutes les secondes (20 ticks)
+                renderCountdown(matrixStack);
+                tickCount = 0;
+            }
+        }
+
+
         //fill(matrixStack, buttonX, buttonY, buttonX + BUTTON_WIDTH, buttonY + BUTTON_HEIGHT, 0xFFFFFF00); // Couleur jaune clair
     }
 
@@ -193,6 +212,23 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
         }
     }
 
+    private void renderCountdown(MatrixStack matrixStack) {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
+        ZonedDateTime nextMidnight = now.toLocalDate().plusDays(1).atStartOfDay(ZoneId.of("Europe/Paris"));
+        Duration duration = Duration.between(now, nextMidnight);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.getSeconds() % 60;
+
+        String countdownText = "Reset dans : " + String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        int stringWidth = font.width(countdownText);
+        int x = (this.width - stringWidth) / 2;
+        int y = 20; // Ajustez cette valeur selon votre mise en page
+
+        // Dessinez le texte avec un contour noir
+        drawString(matrixStack, font, countdownText, x + 1, y, 0x000000); // Ombre
+        drawString(matrixStack, font, countdownText, x, y - 1, 0xFFFFFF); // Texte blanc
+    }
 
 
 
