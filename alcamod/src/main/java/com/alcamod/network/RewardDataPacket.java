@@ -31,7 +31,9 @@ public class RewardDataPacket {
         for (String reward : msg.rewards) {
             buf.writeUtf(reward);
         }
+        buf.writeUtf(msg.lastClickDate != null ? msg.lastClickDate.toString() : "");
     }
+
     public static RewardDataPacket decode(PacketBuffer buf) {
         int size = buf.readInt();
         List<String> rewards = new ArrayList<>(size);
@@ -39,17 +41,12 @@ public class RewardDataPacket {
             rewards.add(buf.readUtf(32767));
         }
 
-        LocalDate lastClickDate = LocalDate.MIN; // Utilisez une valeur par défaut comme LocalDate.MIN
-
-        if (buf.readableBytes() > 0) {
-            String dateString = buf.readUtf(32767);
-            if (!dateString.isEmpty()) {
-                lastClickDate = LocalDate.parse(dateString);
-            }
-        }
+        String dateString = buf.readUtf(32767);
+        LocalDate lastClickDate = dateString.isEmpty() ? LocalDate.MIN : LocalDate.parse(dateString);
 
         return new RewardDataPacket(rewards, lastClickDate);
     }
+
 
 
 

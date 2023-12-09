@@ -39,7 +39,6 @@ public class RequestRewardsPacket {
     }
 
     public static void handle(RequestRewardsPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        System.out.println("test1");
         ctx.get().enqueueWork(() -> {
             ServerPlayerEntity playerEntity = ctx.get().getSender();
             if (playerEntity != null) {
@@ -51,6 +50,7 @@ public class RequestRewardsPacket {
         });
         ctx.get().setPacketHandled(true);
     }
+
 
 
 

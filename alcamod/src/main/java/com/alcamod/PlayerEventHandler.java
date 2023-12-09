@@ -163,7 +163,6 @@ public class PlayerEventHandler {
             LocalDate currentDate = LocalDate.now();
 
             if (!lastClickDate.equals(currentDate)) {
-                LOGGER.info("Sending daily rewards to player: {}", player.getName().getString());
                 List<String> rewards = readPlayerRewards(playerUUID);
 
                 if (serverPlayer.getServer() != null && serverPlayer.getServer().getPlayerList().getPlayer(playerUUID) != null) {

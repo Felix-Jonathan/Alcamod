@@ -29,6 +29,9 @@ import java.time.LocalDate;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import com.alcamod.NetworkHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class DailyGui extends ContainerScreen<DailyContainer> {
 
     private static final ResourceLocation GUI = new ResourceLocation("alcamod", "textures/gui/dailyrewards.png");
@@ -40,6 +43,8 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
     private final UUID playerUUID = DailyContainer.playerUUID;
     // Dans vos méthodes, utilisez :
     private static final List<String> rewards = new ArrayList<>();
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private LocalDate lastClickDate;
     public DailyGui(DailyContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
@@ -127,19 +132,15 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        System.out.println("test0");
         if (mouseX >= buttonX && mouseX <= buttonX + BUTTON_WIDTH && mouseY >= buttonY && mouseY <= buttonY + BUTTON_HEIGHT) {
             ClientPlayerEntity player = Minecraft.getInstance().player;
-            System.out.println("test1");
             if (player != null) {
-                System.out.println("test2");
                 LocalDate currentDate = LocalDate.now();
+                System.out.println(this.lastClickDate);
                 if (!this.lastClickDate.equals(currentDate)) {
-                    System.out.println("date validé");
                     // Envoyer une requête au serveur pour gérer la récompense
                     PacketHandleRewardRequest packet = new PacketHandleRewardRequest(DailyContainer.playerUUID);
                     NetworkHandler.INSTANCE.sendToServer(packet);
-                    System.out.println("Après network");
                     // Fermer l'interface
                     this.onClose();
                 }
@@ -186,12 +187,13 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
         if (player != null) {
             PlayerInventory playerInventory = player.inventory;
             ITextComponent title = new TranslationTextComponent("container.dailygui");
-            DailyContainer dailyContainer = new DailyContainer(0, playerInventory, rewards);
-            DailyGui gui = new DailyGui(dailyContainer, playerInventory, title);
+            DailyGui gui = new DailyGui(new DailyContainer(0, playerInventory, rewards), playerInventory, title);
             gui.lastClickDate = lastClickDate;
             minecraft.setScreen(gui);
         }
     }
+
+
 
 
 }

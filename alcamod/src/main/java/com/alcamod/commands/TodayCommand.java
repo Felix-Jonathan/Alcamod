@@ -43,6 +43,8 @@ public class TodayCommand {
 
         LOGGER.info("Rewards fetched: {}", rewards);
         LocalDate lastClickDate = readLastClickDate(playerUUID);  // Ajoutez la méthode readLastClickDate si elle n'existe pas déjà
+        LOGGER.info(lastClickDate);
+
         RewardDataPacket packet = new RewardDataPacket(rewards, lastClickDate);
         NetworkHandler.INSTANCE.sendTo(packet, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 
@@ -71,10 +73,13 @@ public class TodayCommand {
             String json = new String(Files.readAllBytes(playerFile));
             JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
             String lastClickDateString = jsonObject.get("lastClickDate").getAsString();
+            LOGGER.info(lastClickDateString);
             return LocalDate.parse(lastClickDateString);
         } catch (Exception e) {
             e.printStackTrace();
             return LocalDate.MIN; // Retourne une date minimale en cas d'erreur
         }
     }
+
+
 }
