@@ -1,5 +1,6 @@
 package com.alcamod;
 
+import com.alcamod.network.PacketHandleRewardRequest;
 import com.alcamod.network.RequestRewardsPacket;
 import com.alcamod.network.RewardDataPacket;
 import net.minecraft.util.ResourceLocation;
@@ -17,15 +18,15 @@ public class NetworkHandler {
 
     public static void registerMessages() {
         int id = 0;
-        // Assurez-vous que PacketAddItemToInventory est correctement défini quelque part dans votre code
-        logPacketRegistration("PacketAddItemToInventory", id);
-        INSTANCE.registerMessage(id++, PacketAddItemToInventory.class, PacketAddItemToInventory::encode, PacketAddItemToInventory::decode, PacketAddItemToInventory::handle);
 
         logPacketRegistration("RequestRewardsPacket", id);
         INSTANCE.registerMessage(id++, RequestRewardsPacket.class, RequestRewardsPacket::encode, RequestRewardsPacket::decode, RequestRewardsPacket::handle);
 
         logPacketRegistration("RewardDataPacket", id);
         INSTANCE.registerMessage(id++, RewardDataPacket.class, RewardDataPacket::encode, RewardDataPacket::decode, RewardDataPacket::handle);
+
+        logPacketRegistration("PacketAddItemToInventory", id);
+        INSTANCE.registerMessage(id++, PacketHandleRewardRequest.class, PacketHandleRewardRequest::encode, PacketHandleRewardRequest::decode, PacketHandleRewardRequest::handle);
 
         logPacketRegistration("Finish", id);
     }

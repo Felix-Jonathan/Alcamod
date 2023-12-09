@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +42,8 @@ public class TodayCommand {
         List<String> rewards = readPlayerRewards(playerUUID);
 
         LOGGER.info("Rewards fetched: {}", rewards);
-        RewardDataPacket packet = new RewardDataPacket(rewards);
+        LocalDate lastClickDate = readLastClickDate(playerUUID);  // Ajoutez la méthode readLastClickDate si elle n'existe pas déjà
+        RewardDataPacket packet = new RewardDataPacket(rewards, lastClickDate);
         NetworkHandler.INSTANCE.sendTo(packet, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 
         LOGGER.info("Rewards packet sent to player: {}", player.getName().getString());
@@ -60,6 +62,19 @@ public class TodayCommand {
         } catch (Exception e) {
             LOGGER.error("Error reading player rewards", e);
             return Collections.emptyList();
+        }
+    }
+
+    private static LocalDate readLastClickDate(UUID playerUUID) {
+        try {
+            Path playerFile = Paths.get("config/alcamod/dailyRewards/playerData", playerUUID.toString() + ".json");
+            String json = new String(Files.readAllBytes(playerFile));
+            JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+            String lastClickDateString = jsonObject.get("lastClickDate").getAsString();
+            return LocalDate.parse(lastClickDateString);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return LocalDate.MIN; // Retourne une date minimale en cas d'erreur
         }
     }
 }

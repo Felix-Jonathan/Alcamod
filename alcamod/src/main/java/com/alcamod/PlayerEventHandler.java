@@ -167,7 +167,7 @@ public class PlayerEventHandler {
                 List<String> rewards = readPlayerRewards(playerUUID);
 
                 if (serverPlayer.getServer() != null && serverPlayer.getServer().getPlayerList().getPlayer(playerUUID) != null) {
-                    RewardDataPacket packet = new RewardDataPacket(rewards);
+                    RewardDataPacket packet = new RewardDataPacket(rewards, lastClickDate);
                     NetworkHandler.INSTANCE.sendTo(packet, serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
                 }
             }

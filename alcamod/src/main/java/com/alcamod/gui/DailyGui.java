@@ -1,6 +1,6 @@
 package com.alcamod.gui;
 
-import com.alcamod.PacketAddItemToInventory;
+import com.alcamod.network.PacketHandleRewardRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -31,7 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import com.alcamod.NetworkHandler;
 public class DailyGui extends ContainerScreen<DailyContainer> {
 
-    private static final ResourceLocation GUI = new ResourceLocation("alcamod", "textures/gui/interfacejournalieresansbg.png");
+    private static final ResourceLocation GUI = new ResourceLocation("alcamod", "textures/gui/dailyrewards.png");
     private static final int BUTTON_WIDTH = 100;
     private static final int BUTTON_HEIGHT = 20;
     private int buttonX;
@@ -41,7 +41,7 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
     // Dans vos méthodes, utilisez :
     private static final List<String> rewards = new ArrayList<>();
 
-
+    private LocalDate lastClickDate;
     public DailyGui(DailyContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         // Vous devrez ajuster ces dimensions en fonction de la taille de votre image de fond et de la mise en page de votre GUI
@@ -124,36 +124,22 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
 
 
 
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        System.out.println("test0");
         if (mouseX >= buttonX && mouseX <= buttonX + BUTTON_WIDTH && mouseY >= buttonY && mouseY <= buttonY + BUTTON_HEIGHT) {
             ClientPlayerEntity player = Minecraft.getInstance().player;
+            System.out.println("test1");
             if (player != null) {
-                LocalDate lastClickDate = readLastClickDate(DailyContainer.playerUUID);
+                System.out.println("test2");
                 LocalDate currentDate = LocalDate.now();
-                if (!lastClickDate.equals(currentDate)) {
-                    for (String reward : this.rewards) {
-                        if (!"alcamod:green_mark".equals(reward)) {
-                            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(reward.toLowerCase()));
-                            if (item != null) {
-                                ItemStack itemStack = new ItemStack(item);
-                                // Donner l'item au joueur
-                                //boolean itemAdded = player.inventory.add(itemStack);
-                                PacketAddItemToInventory packet = new PacketAddItemToInventory(itemStack);
-                                NetworkHandler.INSTANCE.sendToServer(new PacketAddItemToInventory(itemStack));
-                                player.inventoryMenu.broadcastChanges();
-                                break;
-                            }
-                        }
-                    }
-                    for (int i = 0; i < rewards.size(); i++) {
-                        if (!rewards.get(i).equals("alcamod:green_mark")) {
-                            rewards.set(i, "alcamod:green_mark");
-                            break;
-                        }
-                    }
-                    savePlayerData(DailyContainer.playerUUID, rewards, currentDate.toString());
-
+                if (!this.lastClickDate.equals(currentDate)) {
+                    System.out.println("date validé");
+                    // Envoyer une requête au serveur pour gérer la récompense
+                    PacketHandleRewardRequest packet = new PacketHandleRewardRequest(DailyContainer.playerUUID);
+                    NetworkHandler.INSTANCE.sendToServer(packet);
+                    System.out.println("Après network");
                     // Fermer l'interface
                     this.onClose();
                 }
@@ -193,28 +179,17 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
         }
     }
 
-    private LocalDate readLastClickDate(UUID playerUUID) {
-        try {
-            Path playerFile = Paths.get("config/alcamod/dailyRewards/playerData", playerUUID.toString() + ".json");
-            String json = new String(Files.readAllBytes(playerFile));
-            JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-            String lastClickDateString = jsonObject.get("lastClickDate").getAsString();
-            return LocalDate.parse(lastClickDateString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return LocalDate.MIN; // Retourne une date minimale en cas d'erreur
-        }
-    }
-
     // Dans DailyGui
-    public static void openWithRewards(List<String> rewards) {
+    public static void openWithRewards(List<String> rewards, LocalDate lastClickDate) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientPlayerEntity player = minecraft.player;
         if (player != null) {
             PlayerInventory playerInventory = player.inventory;
             ITextComponent title = new TranslationTextComponent("container.dailygui");
             DailyContainer dailyContainer = new DailyContainer(0, playerInventory, rewards);
-            minecraft.setScreen(new DailyGui(dailyContainer, playerInventory, title));
+            DailyGui gui = new DailyGui(dailyContainer, playerInventory, title);
+            gui.lastClickDate = lastClickDate;
+            minecraft.setScreen(gui);
         }
     }
 
