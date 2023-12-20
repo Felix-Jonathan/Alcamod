@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "alcamod:item/green_mark"
+    "layer0": "alcamod:item/money"
   }
 }

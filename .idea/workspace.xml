@@ -4,7 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca8c20ba-14b9-426e-86c0-6b858105fce0" name="Changes" comment="" />
+    <list default="true" id="ca8c20ba-14b9-426e-86c0-6b858105fce0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alcamod/src/main/java/com/alcamod/entities/phantomknight/PhantomKnight.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alcamod/src/main/java/com/alcamod/entities/phantomknight/PhantomKnightModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alcamod/src/main/java/com/alcamod/entities/phantomknight/PhantomKnightRenderer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alcamod/src/main/java/com/alcamod/items/Money.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alcamod/src/main/resources/assets/alcamod/models/entity/phantom_knight.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alcamod/src/main/resources/assets/alcamod/models/item/money.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alcamod/src/main/resources/assets/alcamod/textures/item/money.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alcamod/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/alcamod/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alcamod/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/alcamod/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alcamod/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/alcamod/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alcamod/src/main/java/com/alcamod/Alcamod.java" beforeDir="false" afterPath="$PROJECT_DIR$/alcamod/src/main/java/com/alcamod/Alcamod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/alcamod/src/main/resources/assets/alcamod/lang/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/alcamod/src/main/resources/assets/alcamod/lang/en_us.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,27 +37,110 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2R9vGj81q31uMWRWUzHiw10jgSl" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.runclient.executor": "Run",
+    "Gradle.D:/Backup/Bureau/Alcarya/Git/Alcamod/alcamod/build.gradle.executor": "Run",
+    "Gradle.alcamod.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/Backup/Bureau/Alcarya/Alcamod/alcamod",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Backup/Bureau/Alcarya/Git/Alcamod/alcamod",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Backup\Bureau\Alcarya\Git\Alcamod\alcamod\src\main\resources\assets\alcamod\textures\item" />
+      <recent name="D:\Backup\Bureau\Alcarya\Git\Alcamod\alcamod\src\main\resources\assets\alcamod\models\item" />
+      <recent name="D:\Backup\Bureau\Alcarya\Git\Alcamod\alcamod\src\main\java\com\alcamod\items" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.D:/Backup/Bureau/Alcarya/Git/Alcamod/alcamod/build.gradle">
+    <configuration name="D:/Backup/Bureau/Alcarya/Git/Alcamod/alcamod/build.gradle" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/alcamod/build.gradle" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="alcamod" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/alcamod" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.D:/Backup/Bureau/Alcarya/Git/Alcamod/alcamod/build.gradle" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-21.0.1-openjdk-21.0.1-3183f394aec4-7d648f2c" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -54,6 +152,9 @@
       <workItem from="1686675022137" duration="2158000" />
       <workItem from="1689013230625" duration="100000" />
       <workItem from="1689013355321" duration="37000" />
+      <workItem from="1703087491556" duration="4019000" />
+      <workItem from="1703101864929" duration="633000" />
+      <workItem from="1703102511899" duration="139000" />
     </task>
     <servers />
   </component>
