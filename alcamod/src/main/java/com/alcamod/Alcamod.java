@@ -30,6 +30,17 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import com.alcamod.blocks.AlcaniteBlock;
+import com.alcamod.blocks.trophy.trophyCreate;
+import com.alcamod.blocks.trophy.trophyAe2;
+import com.alcamod.blocks.trophy.trophyBotania;
+import com.alcamod.blocks.trophy.trophyCroptopia;
+import com.alcamod.blocks.trophy.trophyMekanism;
+import com.alcamod.blocks.trophy.trophyWoot;
+import com.alcamod.blocks.trophy.trophyDraconicEvolution;
+import com.alcamod.blocks.trophy.trophyIndustrialForegoing;
+import com.alcamod.blocks.trophy.trophyMysticalAgriculture;
+import com.alcamod.blocks.trophy.trophySolarFlux;
+import com.alcamod.blocks.trophy.trophyMasterSword;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -65,8 +76,59 @@ public class Alcamod {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 
+    //Blocks
+    public static final RegistryObject<Block> ALCANITE_BLOCK = BLOCKS.register("alcanite_block", AlcaniteBlock::new);
+    public static final RegistryObject<Block> TROPHY_CREATE = BLOCKS.register("trophy_create", trophyCreate::new);
+
+    public static final RegistryObject<Block> TROPHY_AE2 = BLOCKS.register("trophy_ae2", trophyAe2::new);
+    public static final RegistryObject<Block> TROPHY_BOTANIA = BLOCKS.register("trophy_botania", trophyBotania::new);
+    public static final RegistryObject<Block> TROPHY_CROPTOPIA = BLOCKS.register("trophy_croptopia", trophyCroptopia::new);
+    public static final RegistryObject<Block> TROPHY_DRACONIC_EVOLUTION = BLOCKS.register("trophy_draconic_evolution", trophyDraconicEvolution::new);
+    public static final RegistryObject<Block> TROPHY_MYSTICAL_AGRICULTURE = BLOCKS.register("trophy_mystical_agriculture", trophyMysticalAgriculture::new);
+    public static final RegistryObject<Block> TROPHY_INDUSTRIAL_FOREGOING = BLOCKS.register("trophy_industrial_foregoing", trophyIndustrialForegoing::new);
+    public static final RegistryObject<Block> TROPHY_WOOT = BLOCKS.register("trophy_woot", trophyWoot::new);
+    public static final RegistryObject<Block> TROPHY_MEKANISM = BLOCKS.register("trophy_mekanism", trophyMekanism::new);
+    public static final RegistryObject<Block> TROPHY_SOLAR_FLUX = BLOCKS.register("trophy_solar_flux", trophySolarFlux::new);
+    public static final RegistryObject<Block> TROPHY_MASTER_SWORD = BLOCKS.register("trophy_master_sword", trophyMasterSword::new);
+
+    //Items
+    public static final RegistryObject<Item> TROPHY_CREATE_ITEM = ITEMS.register("trophy_create",
+            () -> new BlockItem(TROPHY_CREATE.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_AE2_ITEM = ITEMS.register("trophy_ae2",
+            () -> new BlockItem(TROPHY_AE2.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+    public static final RegistryObject<Item> TROPHY_BOTANIA_ITEM = ITEMS.register("trophy_botania",
+            () -> new BlockItem(TROPHY_BOTANIA.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_CROPTOPIA_ITEM = ITEMS.register("trophy_croptopia",
+            () -> new BlockItem(TROPHY_CROPTOPIA.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_DRACONIC_EVOLUTION_ITEM = ITEMS.register("trophy_draconic_evolution",
+            () -> new BlockItem(TROPHY_DRACONIC_EVOLUTION.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_MYSTICAL_AGRICULTURE_ITEM = ITEMS.register("trophy_mystical_agriculture",
+            () -> new BlockItem(TROPHY_MYSTICAL_AGRICULTURE.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_INDUSTRIAL_FOREGOING_ITEM = ITEMS.register("trophy_industrial_foregoing",
+            () -> new BlockItem(TROPHY_INDUSTRIAL_FOREGOING.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_WOOT_ITEM = ITEMS.register("trophy_woot",
+            () -> new BlockItem(TROPHY_WOOT.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_MEKANISMITEM = ITEMS.register("trophy_mekanism",
+            () -> new BlockItem(TROPHY_MEKANISM.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_SOLAR_FLUX_ITEM = ITEMS.register("trophy_solar_flux",
+            () -> new BlockItem(TROPHY_SOLAR_FLUX.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+    public static final RegistryObject<Item> TROPHY_MASTER_SWORD_ITEM = ITEMS.register("trophy_master_sword",
+            () -> new BlockItem(TROPHY_MASTER_SWORD.get(), new Item.Properties().tab(ItemGroup.TAB_DECORATIONS)));
+
+
     public static final RegistryObject<Item> GreenMark = ITEMS.register("green_mark", com.alcamod.items.GreenMark::new);
     public static final RegistryObject<Item> Money = ITEMS.register("money", com.alcamod.items.GreenMark::new);
+
+    //Alcanite
 
     public static final RegistryObject<Item> Alcanite = ITEMS.register("alcanite", com.alcamod.items.Alcanite::new);
     public static final RegistryObject<Item> AlcaniteNugget = ITEMS.register("alcanite_nugget", com.alcamod.items.AlcaniteNugget::new);
@@ -98,7 +160,7 @@ public class Alcamod {
             new AlcaniteHoe(AlcaniteTier.ALCANITE, 1, -1.0F, new Item.Properties().tab(ItemGroup.TAB_TOOLS))
     );
 
-    public static final RegistryObject<Block> ALCANITE_BLOCK = BLOCKS.register("alcanite_block", AlcaniteBlock::new);
+
 
     public static final RegistryObject<Item> ALCANITE_BLOCK_ITEM = ITEMS.register("alcanite_block",
             () -> new BlockItem(ALCANITE_BLOCK.get(), new Item.Properties().tab(ItemGroup.TAB_BUILDING_BLOCKS)));
@@ -118,14 +180,14 @@ public class Alcamod {
 
     // Définir l'EntityType de PhantomKnight
 
-    public static final RegistryObject<EntityType<PhantomKnight>> PHANTOM_KNIGHT = ENTITY_TYPES.register("phantom_knight", () -> {
-        int sizeInt = readBossSize("PhantomKnight"); // Lecture de la taille depuis le fichier de config
-        float sizeFloat = (float) sizeInt; // Conversion de int en float
-        float defaultSize = sizeFloat >= 1 ? sizeFloat : 1.0F; // Utilisation de la taille lue ou d'une taille par défaut
-        return EntityType.Builder.of(PhantomKnight::new, EntityClassification.MONSTER)
-                .sized(defaultSize, defaultSize) // Utilisation de la taille définie
-                .build(new ResourceLocation(Alcamod.MOD_ID, "phantom_knight").toString());
-    });
+    //public static final RegistryObject<EntityType<PhantomKnight>> PHANTOM_KNIGHT = ENTITY_TYPES.register("phantom_knight", () -> {
+    //    int sizeInt = readBossSize("PhantomKnight"); // Lecture de la taille depuis le fichier de config
+    //    float sizeFloat = (float) sizeInt; // Conversion de int en float
+    //    float defaultSize = sizeFloat >= 1 ? sizeFloat : 1.0F; // Utilisation de la taille lue ou d'une taille par défaut
+    //    return EntityType.Builder.of(PhantomKnight::new, EntityClassification.MONSTER)
+    //            .sized(defaultSize, defaultSize) // Utilisation de la taille définie
+    //            .build(new ResourceLocation(Alcamod.MOD_ID, "phantom_knight").toString());
+    //});
 
 
     private static int readBossSize(String bossName) {
@@ -164,7 +226,7 @@ public class Alcamod {
             Files.createDirectories(ultimateBattlePath);
 
             // Créer un dossier pour chaque boss
-            createBossConfigDirectory(ultimateBattlePath, "PhantomKnight");
+            //createBossConfigDirectory(ultimateBattlePath, "PhantomKnight");
 
             Path ultimateBattleConfigJson = ultimateBattlePath.resolve("config.json");
             if (!Files.exists(ultimateBattleConfigJson)) {
@@ -310,7 +372,7 @@ public class Alcamod {
     private void doClientStuff(final FMLClientSetupEvent event) {
         // Enregistrement de l'écran (GUI) avec le conteneur
         ScreenManager.register(Alcamod.DAILY_CONTAINER.get(), DailyGui::new);
-        RenderingRegistry.registerEntityRenderingHandler(Alcamod.PHANTOM_KNIGHT.get(), PhantomKnightRenderer::new);
+        //RenderingRegistry.registerEntityRenderingHandler(Alcamod.PHANTOM_KNIGHT.get(), PhantomKnightRenderer::new);
 
     }
     
