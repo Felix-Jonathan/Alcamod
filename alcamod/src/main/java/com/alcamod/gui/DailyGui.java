@@ -46,6 +46,8 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
     private int buttonX;
     private int buttonY;
 
+    private static final int FIXED_BACKGROUND_WIDTH = 250;
+    private static final int FIXED_BACKGROUND_HEIGHT = 250;
     private final UUID playerUUID = DailyContainer.playerUUID;
     // Dans vos méthodes, utilisez :
     private static final List<String> rewards = new ArrayList<>();
@@ -65,29 +67,22 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
     }
 
     @Override
-    protected void init() {
-        super.init();
-        // Centrer le bouton sur l'écran
-        if(this.width < 1500) {
-            this.buttonX = (int) ((this.width - BUTTON_WIDTH) / 1.775);
-        }else{
-            this.buttonX = (int) ((this.width - BUTTON_WIDTH) / 1.85);
-        }
-        if(this.height < 500) {
-            this.buttonY = (int) ((this.height - BUTTON_HEIGHT) / 1.275);
-        }else{
-            this.buttonY = (int) ((this.height - BUTTON_HEIGHT) / 2);
-        }
-    }
-
-    @Override
     protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         // Assurez-vous que le chemin d'accès à la texture est correct.
         Minecraft.getInstance().getTextureManager().bind(GUI);
-        int guiLeft = (this.width - this.imageWidth) / 2;
-        int guiTop = (this.height - this.imageHeight) / 2;
-        blit(matrixStack, guiLeft, guiTop, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+
+        // Centrez l'image de fond sur la fenêtre du jeu
+        int guiLeft = (this.width - FIXED_BACKGROUND_WIDTH) / 2;
+        int guiTop = (this.height - FIXED_BACKGROUND_HEIGHT) / 2;
+
+        // Dessinez l'image de fond avec les dimensions fixes
+        blit(matrixStack, guiLeft, guiTop, 0, 0, FIXED_BACKGROUND_WIDTH, FIXED_BACKGROUND_HEIGHT, FIXED_BACKGROUND_WIDTH, FIXED_BACKGROUND_HEIGHT);
+
+        // Maintenant que l'arrière-plan est fixé, positionnez le rectangle gris par rapport à celui-ci
+        this.buttonX = guiLeft + 95 ; // la valeur correcte pour aligner avec votre bouton "RÉCUPÉRER"
+        this.buttonY = guiTop + 178; // la valeur correcte pour aligner avec votre bouton "RÉCUPÉRER"
     }
+
 
     @Override
     protected void renderLabels(MatrixStack matrixStack, int x, int y) {
@@ -97,9 +92,10 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
-        updateDisplaySlots();
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+        this.renderBg(matrixStack, partialTicks, mouseX, mouseY); // Dessine l'arrière-plan fixe
+        super.render(matrixStack, mouseX, mouseY, partialTicks); // Dessine l'interface utilisateur
+        this.renderTooltip(matrixStack, mouseX, mouseY); // Dessine les infobulles
+
         renderCountdown(matrixStack);
         LocalDate currentDate = LocalDate.now();
         if (!lastClickDate.equals(currentDate)) {
@@ -111,7 +107,7 @@ public class DailyGui extends ContainerScreen<DailyContainer> {
         }
 
 
-        //fill(matrixStack, buttonX, buttonY, buttonX + BUTTON_WIDTH, buttonY + BUTTON_HEIGHT, 0xFFFFFF00); // Couleur jaune clair
+        //fill(matrixStack, buttonX, buttonY, buttonX + BUTTON_WIDTH, buttonY + BUTTON_HEIGHT, 0x80C0C0C0);
     }
 
     private void renderScaledItem(MatrixStack matrixStack, Slot slot, float scale) {

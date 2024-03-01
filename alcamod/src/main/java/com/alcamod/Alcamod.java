@@ -127,6 +127,7 @@ public class Alcamod {
 
     public static final RegistryObject<Item> GreenMark = ITEMS.register("green_mark", com.alcamod.items.GreenMark::new);
     public static final RegistryObject<Item> Money = ITEMS.register("money", com.alcamod.items.GreenMark::new);
+    public static final RegistryObject<Item> Key = ITEMS.register("key", com.alcamod.items.Key::new);
 
     //Alcanite
 
