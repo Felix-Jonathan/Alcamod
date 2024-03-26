@@ -1,0 +1,17 @@
+License Agreement for Alcamod
+
+1. Grant of License: This document serves as a legal agreement between the creator ("Licensor") and the users of [Your Mod Name] ("Mod"). The Licensor grants the user the right to use the Mod exclusively on [Your Server Name] server. This license is for personal use only and does not permit redistribution, sale, or modification of the Mod in any form.
+
+2. Restrictions:
+
+The Mod may not be redistributed, sold, decompiled, reverse engineered, or otherwise altered without the express written permission of the Licensor.
+The Mod is provided for use only on the Alcarya and is not to be used on any other server or platform without prior written consent from the Licensor.
+No part of the Mod may be used to create derivative works or to provide any kind of service or product to third parties.
+
+3. No Warranty: The Mod is provided 'as is' without any warranties of any kind, either expressed or implied. The Licensor will not be liable for any damages or loss of data resulting from the use or inability to use the Mod.
+
+4. Termination: This license is effective until terminated by either party. Your rights under this license will terminate automatically without notice from the Licensor if you fail to comply with any term(s) of this license.
+
+5. Governing Law: This license agreement is governed by the laws of the jurisdiction where the Licensor resides.
+
+By using Alcamod, you acknowledge that you have read this license, understand it, and agree to be bound by its terms and conditions.
