@@ -8,14 +8,18 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
+apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 version = '4.6'
 group = 'com.alcamod'
 archivesBaseName = 'alcamod'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java {
+    // Make sure to use Java 17 for source and target compatibility
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
