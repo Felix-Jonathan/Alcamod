@@ -2,6 +2,10 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://files.minecraftforge.net/maven' }
+        maven {
+            name = 'GeckoLib'
+            url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' 
+        }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.+', changing: true

@@ -63,6 +63,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 import com.alcamod.gui.DailyGui;
 import com.alcamod.NetworkHandler;
+import com.alcamod.entities.ModSpawnEggItem;
 import com.alcamod.entities.phantomknight.PhantomKnightEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -201,13 +202,12 @@ public class Alcamod {
     public static final RegistryObject<EntityType<PhantomKnightEntity>> PHANTOM_KNIGHT_ENTITY = ENTITY_TYPES.register(
             "phantom_knight",
             () -> EntityType.Builder.of(PhantomKnightEntity::new, EntityClassification.MONSTER)
-                    .sized(0.6F, 1.95F)
-                    .build("alcamod:phantom_knight"));
+                    .sized(1.0f, 1.0f) // Example size, adjust as needed
+                    .build(new ResourceLocation("alcamod", "phantom_knight").toString()));
 
     // Enregistrement de l'œuf de spawn pour PhantomKnight
     public static final RegistryObject<Item> PHANTOM_KNIGHT_SPAWN_EGG = ITEMS.register("phantom_knight_spawn_egg",
-            () -> new SpawnEggItem(PHANTOM_KNIGHT_ENTITY, 0x000000, 0xffffff,
-                    new Item.Properties().tab(ItemGroup.TAB_MISC)));
+            () -> new ModSpawnEggItem(PHANTOM_KNIGHT_ENTITY::get, 0x000000, 0xffffff));
 
     private static int readBossSize(String bossName) {
         try {
@@ -220,6 +220,7 @@ public class Alcamod {
             e.printStackTrace();
             return -1; // Retourne une valeur d'erreur en cas d'erreur
         }
+
     }
 
     private void createModConfigDirectory() {
@@ -390,7 +391,6 @@ public class Alcamod {
 
         // Enregistrement du rendu de l'entité
         RenderingRegistry.registerEntityRenderingHandler(PHANTOM_KNIGHT_ENTITY.get(), PhantomKnightRenderer::new);
-
     }
 
     @SubscribeEvent
@@ -403,11 +403,6 @@ public class Alcamod {
         @SubscribeEvent
         public static void onCommonSetup(FMLCommonSetupEvent event) {
             // Configuration commune ici
-        }
-
-        @SubscribeEvent
-        public static void registerEntityAttributes(RegistryEvent.Register<EntityType<?>> event) {
-            GlobalEntityTypeAttributes.put(PHANTOM_KNIGHT_ENTITY.get(), PhantomKnightEntity.createAttributes().build());
         }
     }
 
