@@ -1,0 +1,27 @@
+# This is an example mods.toml file. It contains the data relating to the loading mods.
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+
+[[mods]]
+modId="${mod_id}" #mandatory
+version="${mod_version}" #mandatory
+displayName="${mod_name}" #mandatory
+logoFile="alcamod.png"
+authors="${mod_authors}" #optional
+description="${mod_description}"
+
+
+[[dependencies.alcamod]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.alcamod]]
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

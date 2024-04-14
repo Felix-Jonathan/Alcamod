@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"facing=north": {"model": "alcamod:block/trophy_mystical_agriculture", "y": 0},
+		"facing=south": {"model": "alcamod:block/trophy_mystical_agriculture", "y": 180},
+		"facing=east": {"model": "alcamod:block/trophy_mystical_agriculture", "y": 90},
+		"facing=west": {"model": "alcamod:block/trophy_mystical_agriculture", "y": 270}
+	}
+}
