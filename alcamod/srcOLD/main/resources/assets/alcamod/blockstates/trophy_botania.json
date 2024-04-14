@@ -1,8 +1,0 @@
-{
-	"variants": {
-		"facing=north": {"model": "alcamod:block/trophy_botania", "y": 0},
-		"facing=south": {"model": "alcamod:block/trophy_botania", "y": 180},
-		"facing=east": {"model": "alcamod:block/trophy_botania", "y": 90},
-		"facing=west": {"model": "alcamod:block/trophy_botania", "y": 270}
-	}
-}

@@ -1,8 +1,10 @@
 package com.alcamod;
 
 import com.alcamod.blocks.trophy.TrophyBlock;
+import com.alcamod.commands.RewardCommand;
 import com.alcamod.material.AlcaniteArmorMaterial;
 import com.alcamod.material.AlcaniteTier;
+import com.alcamod.network.RewardScreenPacketHandler;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;
@@ -40,7 +42,7 @@ import org.slf4j.Logger;
 @Mod(Alcamod.MODID)
 public class Alcamod {
     public static final String MODID = "alcamod";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
@@ -135,12 +137,12 @@ public class Alcamod {
         TABS.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("HELLO FROM COMMON SETUP");
+        RewardScreenPacketHandler.register();
+        Config.init();
     }
 
     @SubscribeEvent
@@ -148,14 +150,16 @@ public class Alcamod {
         LOGGER.info("HELLO from server starting");
     }
 
-// Classe interne pour gérer les événements spécifiques au client (graphique, interactions utilisateurs...)
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public static class ClientModEvents {
+
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         // Configuration client, comme la mise en place de rendus ou de contrôleurs
         LOGGER.info("HELLO FROM CLIENT SETUP");
         LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());  // Affiche le nom de l'utilisateur
+        MinecraftForge.EVENT_BUS.register(ClientModEvents.class);
+        MinecraftForge.EVENT_BUS.addListener(RewardCommand::onCommandsRegister);
     }
 }
 }

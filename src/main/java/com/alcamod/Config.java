@@ -1,64 +1,121 @@
 package com.alcamod;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.lang.reflect.Type;
 
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Forge's config APIs
-@Mod.EventBusSubscriber(modid = Alcamod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class Config
-{
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+@Mod.EventBusSubscriber
+public class Config {
 
-    private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Path CONFIG_PATH = Paths.get("config/alcamod/dailyRewards/config.json");
+    private static final Path PLAYER_DATA_PATH = Paths.get("config/alcamod/dailyRewards/playerData");
+    private static List<String> rewards;
+    private static List<String> topRewards;
 
-    private static final ForgeConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    public static void init() {
+        try {
+            Files.createDirectories(CONFIG_PATH.getParent());
+            if (!Files.exists(CONFIG_PATH)) {
+                saveDefaultConfig();
+            } else {
+                loadConfig();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public static final ForgeConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
+    private static void loadConfig() throws IOException {
+        String json = Files.readString(CONFIG_PATH);
+        Type type = new TypeToken<Map<String, List<String>>>() {}.getType();
+        Map<String, List<String>> configData = GSON.fromJson(json, type);
+        rewards = configData.get("rewards");
+        topRewards = configData.get("topRewards");
+    }
 
-    // a list of strings that are treated as resource locations for items
-    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
+    private static void saveDefaultConfig() throws IOException {
+        Map<String, List<String>> defaultConfig = new HashMap<>();
+        defaultConfig.put("rewards", Arrays.asList("minecraft:stone", "minecraft:dirt"));
+        defaultConfig.put("topRewards", Arrays.asList("minecraft:totem_of_undying", "minecraft:heart_of_the_sea"));
+        String json = GSON.toJson(defaultConfig);
+        try (BufferedWriter writer = Files.newBufferedWriter(CONFIG_PATH)) {
+            writer.write(json);
+        }
+    }
 
-    static final ForgeConfigSpec SPEC = BUILDER.build();
+    public static void handlePlayerLogin(UUID playerUUID) throws IOException {
+        Path playerDataFile = PLAYER_DATA_PATH.resolve(playerUUID.toString() + ".json");
+        Files.createDirectories(PLAYER_DATA_PATH);
+        if (!Files.exists(playerDataFile)) {
+            PlayerData playerData = createDefaultPlayerData(playerUUID);
+            String json = GSON.toJson(playerData);
+            try (BufferedWriter writer = Files.newBufferedWriter(playerDataFile)) {
+                writer.write(json);
+            }
+        }
+    }
 
-    public static boolean logDirtBlock;
-    public static int magicNumber;
-    public static String magicNumberIntroduction;
-    public static Set<Item> items;
+    private static PlayerData createDefaultPlayerData(UUID playerUUID) {
+        List<String> playerRewards = new ArrayList<>();
+        Random random = new Random();
+        IntStream.range(0, 15).forEach(i -> {
+            if (i == 6 || i == 14) {
+                playerRewards.add(topRewards.get(random.nextInt(topRewards.size())));
+            } else {
+                playerRewards.add(rewards.get(random.nextInt(rewards.size())));
+            }
+        });
 
-    private static boolean validateItemName(final Object obj)
-    {
-        return obj instanceof final String itemName && ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
+        String lastClickDate = LocalDate.now().minusDays(1).toString();
+        return new PlayerData(playerRewards, lastClickDate);
+    }
+
+    private static List<Item> convertToItems(List<String> itemNames) {
+        return itemNames.stream()
+                .map(ResourceLocation::new)
+                .map(ForgeRegistries.ITEMS::getValue)
+                .collect(Collectors.toList());
     }
 
     @SubscribeEvent
-    static void onLoad(final ModConfigEvent event)
-    {
-        logDirtBlock = LOG_DIRT_BLOCK.get();
-        magicNumber = MAGIC_NUMBER.get();
-        magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
+    public static void onConfigLoad(ModConfigEvent.Loading event) {
+        // This will be called when the server loads the config
+        init();
+    }
 
-        // convert the list of strings into a set of items
-        items = ITEM_STRINGS.get().stream()
-                .map(itemName -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName)))
-                .collect(Collectors.toSet());
+    @SubscribeEvent
+    public static void onConfigReload(ModConfigEvent.Reloading event) {
+        // This will be called when the server reloads the config
+        init();
+    }
+
+    private static class PlayerData {
+        List<String> rewards;
+        String lastClickDate;
+
+        public PlayerData(List<String> rewards, String lastClickDate) {
+            this.rewards = rewards;
+            this.lastClickDate = lastClickDate;
+        }
     }
 }
