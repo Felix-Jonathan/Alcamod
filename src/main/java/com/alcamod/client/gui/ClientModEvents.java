@@ -32,7 +32,7 @@ public class ClientModEvents {
             e.printStackTrace(); // Pour le débogage
         }
         if (!imageDisplayed) {
-            Minecraft.getInstance().setScreen(new RewardScreen());
+            Minecraft.getInstance().setScreen(new RewardScreen(player.getUUID()));
             imageDisplayed = true; // Met à jour le flag après affichage
         }
     }

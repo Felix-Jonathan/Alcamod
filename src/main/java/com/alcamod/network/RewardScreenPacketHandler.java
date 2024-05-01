@@ -9,15 +9,16 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class RewardScreenPacketHandler {
     private static final String PROTOCOL_VERSION = "1";
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation("alcamod", "network"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
+        new ResourceLocation("alcamod", "network"),
+        () -> PROTOCOL_VERSION,
+        PROTOCOL_VERSION::equals,
+        PROTOCOL_VERSION::equals
     );
 
     public static void register() {
@@ -25,20 +26,22 @@ public class RewardScreenPacketHandler {
     }
 
     public static void sendOpenRewardScreenPacket(ServerPlayer player) {
-        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new OpenRewardScreenPacket());
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new OpenRewardScreenPacket(player.getUUID()));
     }
 
     public static class OpenRewardScreenPacket {
-        // Packet doesn't carry any data
-        public OpenRewardScreenPacket() {}
+        private final UUID playerUUID;
+
+        public OpenRewardScreenPacket(UUID uuid) {
+            this.playerUUID = uuid;
+        }
 
         public static void encode(OpenRewardScreenPacket msg, FriendlyByteBuf buffer) {
-            // Nothing to encode
+            buffer.writeUUID(msg.playerUUID);
         }
 
         public static OpenRewardScreenPacket decode(FriendlyByteBuf buffer) {
-            // Nothing to decode
-            return new OpenRewardScreenPacket();
+            return new OpenRewardScreenPacket(buffer.readUUID());
         }
 
         public static void handle(OpenRewardScreenPacket msg, Supplier<NetworkEvent.Context> ctx) {
@@ -46,7 +49,7 @@ public class RewardScreenPacketHandler {
             context.enqueueWork(() -> {
                 // Ensure that the action is run on the client
                 if (context.getDirection().getReceptionSide().isClient()) {
-                    net.minecraft.client.Minecraft.getInstance().setScreen(new RewardScreen());
+                    net.minecraft.client.Minecraft.getInstance().setScreen(new RewardScreen(msg.playerUUID));
                 }
             });
             context.setPacketHandled(true);
