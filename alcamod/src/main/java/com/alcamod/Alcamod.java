@@ -141,6 +141,7 @@ public class Alcamod {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("HELLO FROM COMMON SETUP");
+        System.out.println("Suis-jeUnServeur?");
         RewardScreenPacketHandler.register();
         Config.init();
     }

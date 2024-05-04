@@ -1,18 +1,11 @@
 package com.alcamod.client.gui;
 
-import java.util.UUID;
 
 import com.alcamod.Alcamod;
 import com.alcamod.Config;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,17 +19,7 @@ public class ClientModEvents {
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         
         Player player = event.getEntity();
-        try {
-            Config.handlePlayerLogin(player.getUUID());
-        } catch (Exception e) {
-            e.printStackTrace(); // Pour le débogage
-        }
-        if (!imageDisplayed) {
-            Minecraft.getInstance().execute(() -> {
-                Minecraft.getInstance().setScreen(new RewardScreen(player.getUUID()));
-                imageDisplayed = true; // Met à jour le flag après affichage
-            });
-        }
+        //Do Some Stuff GLHF
     }
 
     @SubscribeEvent

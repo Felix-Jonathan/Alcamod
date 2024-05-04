@@ -1,7 +1,6 @@
 package com.alcamod.client.gui;
 
 import com.alcamod.Alcamod;
-import com.alcamod.network.AddItemToInventoryPacket;
 import com.alcamod.network.RewardScreenPacketHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,10 +14,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.FileReader;
@@ -40,7 +37,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class RewardScreen extends Screen {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Alcamod.MODID,
             "textures/gui/dailyrewards500.png");
@@ -56,17 +56,29 @@ public class RewardScreen extends Screen {
     private static final int BUTTON_HEIGHT = 25;
 
     private List<ItemStack> playerRewards;
+    private String lastClickDate = null;
+    private UUID playerUUID = null;
 
     public RewardScreen(UUID playerUUID) {
         super(Component.literal("Daily Rewards"));
+        System.out.println("Suis-jeUnServeur?2");
         this.playerRewards = loadPlayerRewards(playerUUID);
+    }
+
+    public RewardScreen(UUID playerUUID, List<ItemStack> playerRewards, String lastClickDate) {
+        super(Component.literal("Daily Rewards"));
+        System.out.println("Suis-jeUnServeur?2.2");
+        this.playerUUID = playerUUID;
+        this.playerRewards = playerRewards;
+        this.lastClickDate = lastClickDate;
+        //Alcamod.LOGGER.info(lastClickDate);
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         renderTexture(guiGraphics);
         renderItems(guiGraphics);
-        // renderButton(guiGraphics, mouseX, mouseY);
+        //renderButton(guiGraphics, mouseX, mouseY);
         renderCountdown(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
@@ -88,7 +100,7 @@ public class RewardScreen extends Screen {
             if ((i % 5) == 0) {
                 x += ITEM_SPACING - (i % 5) - 1;
             } else {
-                x += ITEM_SPACING - (i % 5) ;
+                x += ITEM_SPACING - (i % 5);
             }
             if ((i + 1) % ITEMS_PER_ROW == 0) {
                 x = (this.width - TEXTURE_WIDTH) / 2 + ITEM_START_X;
@@ -131,11 +143,14 @@ public class RewardScreen extends Screen {
         int buttonX = (this.width - TEXTURE_WIDTH) / 2 + BUTTON_X;
         int buttonY = (this.height - TEXTURE_HEIGHT) / 2 + BUTTON_Y;
 
+        //Alcamod.LOGGER.info("TestClick");
         if (mouseX >= buttonX && mouseX < buttonX + BUTTON_WIDTH && mouseY >= buttonY
                 && mouseY < buttonY + BUTTON_HEIGHT) {
+            //Alcamod.LOGGER.info("TestClickValidé");
             for (ItemStack itemStack : playerRewards) {
                 ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(itemStack.getItem());
                 if (!itemRegistryName.toString().equals("alcamod:green_mark")) {
+                    //Alcamod.LOGGER.info("located");
                     writeNextPlayerData(itemRegistryName.toString(), itemStack);
                     return true;
                 }
@@ -147,79 +162,36 @@ public class RewardScreen extends Screen {
     }
 
     // Méthode pour écrire les données du joueur dans le fichier JSON
-    private void writeNextPlayerData(String itemToReplace, ItemStack itemStack) {
-        Path path = FMLPaths.CONFIGDIR.get()
-                .resolve("alcamod/dailyRewards/playerData/" + Minecraft.getInstance().player.getUUID() + ".json");
-        Gson gson = new Gson();
-        try (Reader reader = new FileReader(path.toFile())) {
-            // Parse the JSON file to JsonObject
-            JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+    public void writeNextPlayerData(String itemToReplace, ItemStack itemStack) {
+        //Alcamod.LOGGER.info("STARTPROCESS");
+        // Get the "lastClickDate" field
+        String lastClickDate = "";
+        if (this.lastClickDate != null) {
+            lastClickDate = this.lastClickDate;
 
-            // Get the "lastClickDate" field
-            String lastClickDate = jsonObject.get("lastClickDate").getAsString();
-
-            // Get today's date
+            //Si on est dans le même jour
             LocalDate currentDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String formattedCurrentDate = currentDate.format(formatter);
-
+            //Alcamod.LOGGER.info("Current Date", formattedCurrentDate);
             // Check if lastClickDate is the same as today's date
             if (lastClickDate.equals(formattedCurrentDate)) {
-                System.out.println("You have already clicked today.");
+                Alcamod.LOGGER.info("You have already clicked today.");
                 Minecraft.getInstance().setScreen(null);
                 return;
             }
-            
-            // Ajoute l'objet à l'inventaire du joueur
-            System.out.println("GIVE");
-            System.out.println(itemStack.getDisplayName());
+
+            //Alcamod.LOGGER.info("GIVE");
+            Alcamod.LOGGER.info("["+formattedCurrentDate.toString()+"]"+"Daily Give item to "+this.playerUUID.toString()+" :", itemStack.getDisplayName());
             // Envoyer l'item au serveur au lieu de l'ajouter directement
             sendItemToServer(itemStack);
-            // Met à jour le fichier JSON du joueur
-
-            // Update lastClickDate to today's date
-            jsonObject.addProperty("lastClickDate", formattedCurrentDate);
-
-            // Get the "rewards" JsonArray
-            JsonArray rewardsArray = jsonObject.getAsJsonArray("rewards");
-            // Find the first item that is not "alcamod:green_mark" and replace it
-            boolean allRewardsAreGreenMark = false;
-            for (int i = 0; i < rewardsArray.size(); i++) {
-                String item = rewardsArray.get(i).getAsString();
-                if (!item.equals("alcamod:green_mark")) {
-                    rewardsArray.set(i, gson.toJsonTree("alcamod:green_mark"));
-                    System.out.println(i);
-                    if (i == rewardsArray.size() - 1) {
-                        System.out.println("reset");
-                        allRewardsAreGreenMark = true;
-                    }
-                    break;
-                }
-            }
-
-            // If all rewards are "alcamod:green_mark", reset the rewards array
-            if (allRewardsAreGreenMark) {
-
-                // Recreate the default rewards list
-                List<String> defaultRewards = createDefaultRewards();
-                // Convert it to a JSON array
-                rewardsArray = gson.toJsonTree(defaultRewards).getAsJsonArray();
-                // Update the "rewards" field in the JSON object
-                jsonObject.add("rewards", rewardsArray);
-            }
-
-            // Write the updated JSON object back to the file
-            try (FileWriter writer = new FileWriter(path.toFile())) {
-                gson.toJson(jsonObject, writer);
-            }
-            this.playerRewards = loadPlayerRewards(Minecraft.getInstance().player.getUUID());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            Minecraft.getInstance().setScreen(null); // Ferme l'écran
+        } 
     }
 
     private void sendItemToServer(ItemStack itemStack) {
         if (!itemStack.isEmpty()) {
+            //Alcamod.LOGGER.info("SendItemToServer");
             RewardScreenPacketHandler.sendAddItemToInventoryPacket(itemStack);
         }
         Minecraft.getInstance().setScreen(null);
@@ -249,44 +221,25 @@ public class RewardScreen extends Screen {
         return rewards;
     }
 
-    private LocalDate loadLastClickDate(UUID playerUUID) {
-        LocalDate lastClickDate = null;
+    // private LocalDate loadLastClickDate(UUID playerUUID) {
+    //     LocalDate lastClickDate = null;
 
-        try {
-            Path path = Path.of("config", "alcamod", "dailyRewards", "playerData", playerUUID.toString() + ".json");
-            Gson gson = new Gson();
+    //     try {
+    //         Path path = Path.of("config", "alcamod", "dailyRewards", "playerData", playerUUID.toString() + ".json");
+    //         Gson gson = new Gson();
 
-            try (Reader reader = new FileReader(path.toFile())) {
-                JsonObject json = gson.fromJson(reader, JsonObject.class);
-                String lastClickDateString = json.get("lastClickDate").getAsString();
-                lastClickDate = LocalDate.parse(lastClickDateString, DateTimeFormatter.ISO_LOCAL_DATE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    //         try (Reader reader = new FileReader(path.toFile())) {
+    //             JsonObject json = gson.fromJson(reader, JsonObject.class);
+    //             String lastClickDateString = json.get("lastClickDate").getAsString();
+    //             lastClickDate = LocalDate.parse(lastClickDateString, DateTimeFormatter.ISO_LOCAL_DATE);
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
 
-        return lastClickDate != null ? lastClickDate : LocalDate.MIN;
-    }
+    //     return lastClickDate != null ? lastClickDate : LocalDate.MIN;
+    // }
 
-    private List<String> createDefaultRewards() throws IOException {
-        List<String> defaultRewards = new ArrayList<>();
-        Random random = new Random();
-        String json = Files.readString(Paths.get("config/alcamod/dailyRewards/config.json"));
-        Type type = new TypeToken<Map<String, List<String>>>() {
-        }.getType();
-        Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-        Map<String, List<String>> configData = GSON.fromJson(json, type);
-        List<String> rewards = configData.get("rewards");
-        List<String> topRewards = configData.get("topRewards");
-        IntStream.range(0, 15).forEach(i -> {
-            if (i == 6 || i == 14) {
-                defaultRewards.add(topRewards.get(random.nextInt(topRewards.size())));
-            } else {
-                defaultRewards.add(rewards.get(random.nextInt(rewards.size())));
-            }
-        });
-        return defaultRewards;
-    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
