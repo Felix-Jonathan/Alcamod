@@ -1,4 +1,11 @@
 {
+  "item.alcamod.magma_golem_core": "Noyau de magma",
+  "item.alcamod.cyborg_circuit": "Circuit",
+  "item.alcamod.shinobi_parchment": "Parchemin",
+  "item.alcamod.reaper_mask": "Masque",
+  "item.alcamod.wizor_pearl": "Perle",
+  "item.alcamod.phantom_knight_letter": "Letter d'Amour",
+  "item.alcamod.shadow_fire_heart": "Coeur de Dragon",
   "item.alcamod.trophy_ae2": "Trophé d'Applied Energistics 2",
   "item.alcamod.trophy_croptopia": "Trophé de Croptopia",
   "item.alcamod.trophy_create": "Trophé de Créate",

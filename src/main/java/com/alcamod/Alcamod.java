@@ -95,12 +95,26 @@ public class Alcamod {
     public static final RegistryObject<Item> GREEN_MARK_ITEM = ITEMS.register("green_mark", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> KEY_ITEM = ITEMS.register("key", () -> new Item(new Item.Properties()));
 
+    public static final RegistryObject<Item> MAGMA_GOLEM_CORE = ITEMS.register("magma_golem_core", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> CYBORG_CIRCUIT = ITEMS.register("cyborg_circuit", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> SHINOBI_PARCHMENT = ITEMS.register("shinobi_parchment", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> REAPER_MASK = ITEMS.register("reaper_mask", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> WIZOR_PEARL = ITEMS.register("wizor_pearl", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> PHANTOM_KNIGHT_LETTER = ITEMS.register("phantom_knight_letter", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> SHADOW_FIRE_HEART = ITEMS.register("shadow_fire_heart", () -> new Item(new Item.Properties()));
 
 
     public static final RegistryObject<CreativeModeTab> ALCAMOD_TAB = TABS.register("alcamod_tab", () -> CreativeModeTab.builder()
     .icon(() -> TROPHY_AE2_ITEM.get().getDefaultInstance()) // Définit l'icône de l'onglet, ici avec le premier trophée pour l'exemple
     .displayItems((parameters, output) -> {
         // Ajouter tous les items de trophée à l'onglet
+        output.accept(MAGMA_GOLEM_CORE.get());
+        output.accept(CYBORG_CIRCUIT.get());
+        output.accept(SHINOBI_PARCHMENT.get());
+        output.accept(REAPER_MASK.get());
+        output.accept(WIZOR_PEARL.get());
+        output.accept(PHANTOM_KNIGHT_LETTER.get());
+        output.accept(SHADOW_FIRE_HEART.get());
         output.accept(TROPHY_AE2_ITEM.get());
         output.accept(TROPHY_BOTANIA_ITEM.get());
         output.accept(TROPHY_CREATE_ITEM.get());
